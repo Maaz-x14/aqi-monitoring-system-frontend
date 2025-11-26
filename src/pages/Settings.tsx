@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchCurrentUser, updateUserCity } from '@/api/userApi';
 import Navbar from '@/components/layout/Navbar';
 import { Button } from '@/components/ui/Button';
+import { toast } from 'sonner';
 
 const CITIES = [
   "Karachi", "Lahore", "Faisalabad", "Rawalpindi", "Gujranwala", 
@@ -21,14 +22,17 @@ export default function Settings() {
     mutationFn: updateUserCity,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user'] });
-      setMsg('City updated successfully!');
-      setTimeout(() => setMsg(''), 3000);
+      toast.success('City updated successfully!'); 
     },
+    onError: () => {
+      toast.error('Failed to update city. Try again.');
+    }
   });
 
   const handleSave = () => {
     if(selectedCity) mutation.mutate(selectedCity);
   };
+
 
   if (isLoading) return <div>Loading...</div>;
 

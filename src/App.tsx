@@ -3,7 +3,9 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Settings from './pages/Settings';
+import History from './pages/History'; 
 import { useAuth } from './hooks/useAuth';
+import { Toaster } from 'sonner';
 
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
   const { isAuthenticated } = useAuth();
@@ -16,6 +18,7 @@ const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
 function App() {
   return (
     <Router>
+      <Toaster position="top-right" richColors />   
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
@@ -25,6 +28,16 @@ function App() {
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          } 
+        />
+
+        {/* --- NEW HISTORY ROUTE --- */}
+        <Route 
+          path="/history" 
+          element={
+            <ProtectedRoute>
+              <History />
             </ProtectedRoute>
           } 
         />
@@ -38,7 +51,6 @@ function App() {
           } 
         />
 
-        {/* Default Redirect */}
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </Router>
