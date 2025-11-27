@@ -1,6 +1,6 @@
 import { useAuth } from '@/hooks/useAuth';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Cloud, LogOut, Settings, History, LayoutDashboard } from 'lucide-react';
+import { Cloud, LogOut, Settings, History, LayoutDashboard, MessageSquare } from 'lucide-react';
 
 export default function Navbar() {
   const { logout } = useAuth();
@@ -31,8 +31,12 @@ export default function Navbar() {
                     Dashboard
                 </Link>
                 <Link to="/history" className={`px-3 py-2 rounded-md text-sm font-medium flex items-center gap-2 ${isActive('/history')}`}>
-                    <History className="w-4 h-4" />
-                    History
+                  <History className="w-4 h-4" />
+                  History
+                </Link>
+                <Link to="/chat" className={`px-3 py-2 rounded-md text-sm font-medium flex items-center gap-2 ${isActive('/chat')}`}>
+                  <MessageSquare className="w-4 h-4" />
+                  Chat
                 </Link>
             </div>
           </div>

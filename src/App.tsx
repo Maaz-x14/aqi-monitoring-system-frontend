@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import Chat from './pages/Chat';
 import Settings from './pages/Settings';
 import History from './pages/History'; 
 import { useAuth } from './hooks/useAuth';
@@ -28,6 +29,15 @@ function App() {
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/chat" 
+          element={
+            <ProtectedRoute>
+              <Chat />
             </ProtectedRoute>
           } 
         />
