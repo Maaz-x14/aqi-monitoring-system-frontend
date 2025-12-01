@@ -7,7 +7,7 @@ import Settings from './pages/Settings';
 import History from './pages/History'; 
 import { useAuth } from './hooks/useAuth';
 import { Toaster } from 'sonner';
-
+import "./styles/leflet-fix.css"
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
   const { isAuthenticated } = useAuth();
   if (!isAuthenticated) {
