@@ -461,12 +461,12 @@ export default function Dashboard() {
           >
             <div className="h-96 flex flex-col justify-between p-6">
               <div>
-                <p className="text-xs font-bold opacity-75 uppercase tracking-widest text-gray-700">Current AQI</p>
-                <h2 className="text-sm font-semibold opacity-90 mt-1 line-clamp-2 text-gray-800">{city}</h2>
+                <p className="text-xs font-bold opacity-75 uppercase tracking-widest text-white">Current AQI</p>
+                <h2 className="text-sm font-semibold opacity-90 mt-1 line-clamp-2 text-white">{city}</h2>
               </div>
               <div className="flex flex-col items-center justify-center flex-1">
-                <div className="text-7xl font-black tracking-tighter text-gray-900">{displayAqi}</div>
-                <p className="text-xs font-medium opacity-70 mt-2 text-center max-w-xs text-gray-700">
+                <div className="text-7xl font-black tracking-tighter text-white">{displayAqi}</div>
+                <p className="text-xs font-medium opacity-70 mt-2 text-center max-w-xs text-white">
                   {aqi?.healthAdvice || "No data"}
                 </p>
               </div>

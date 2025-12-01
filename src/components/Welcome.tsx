@@ -4,7 +4,7 @@ import GradualBlur from "./GradualBlur"
 export default function Welcome() {
   return (
     <div className="w-full relative">
-      <GradualBlur preset="footer" className="pointer-events-none" />
+      {/* <GradualBlur preset="footer" className="pointer-events-none" /> */}
 
       <div className="px-8 py-12 bg-gradient-to-r from-indigo-50 via-blue-50 to-cyan-50 border-b border-indigo-200">
         <div className="max-w-6xl mx-auto">
