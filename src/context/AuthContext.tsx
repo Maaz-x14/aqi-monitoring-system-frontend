@@ -7,6 +7,7 @@ interface AuthContextType {
   logout: () => void;
 }
 
+// Explicitly export the Context
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -14,7 +15,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const isAuthenticated = !!token;
 
   useEffect(() => {
-    // Sync with local storage
     const storedToken = localStorage.getItem('token');
     if (storedToken !== token) {
         setToken(storedToken);

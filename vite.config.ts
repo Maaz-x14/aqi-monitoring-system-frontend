@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
@@ -11,6 +12,14 @@ export default defineConfig({
     },
   },
   server: {
-    port: 3000, // Standard React port
-  }
+    port: 3000,
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    // --- UPDATE THIS LINE ---
+    setupFiles: './src/test/setup.tsx', // Changed from .ts to .tsx
+    // ------------------------
+    css: false, 
+  },
 })

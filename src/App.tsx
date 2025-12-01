@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard';
 import Chat from './pages/Chat';
 import Settings from './pages/Settings';
 import History from './pages/History'; 
+import AdminDashboard from './pages/AdminDashboard';
 import { useAuth } from './hooks/useAuth';
 import { Toaster } from 'sonner';
 import "./styles/leflet-fix.css"
@@ -34,10 +35,27 @@ function App() {
         />
 
         <Route 
+          path="/admin" 
+          element={
+            <ProtectedRoute>
+              <AdminDashboard />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
           path="/chat" 
           element={
             <ProtectedRoute>
               <Chat />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/admin" 
+          element={
+            <ProtectedRoute>
+              <AdminDashboard />
             </ProtectedRoute>
           } 
         />
