@@ -1,19 +1,18 @@
 import '@testing-library/jest-dom';
 import { afterEach, vi } from 'vitest';
 import { cleanup } from '@testing-library/react';
+import React from 'react'; // Ensure React is imported for JSX
 
 afterEach(() => {
   cleanup();
 });
 
-// --- FIX 1: Mock react-leaflet components ---
-// Instead of mocking the underlying 'leaflet' library, we mock the React components.
-// This prevents the heavy map logic from running during tests.
+// --- FIX: Mock react-leaflet components ---
 vi.mock('react-leaflet', () => {
   return {
     MapContainer: ({ children }: { children: React.ReactNode }) => <div data-testid="map-container">{children}</div>,
-    TileLayer: () => <div data-testid="tile-layer" />
-    Marker: ({ children }: { children: React.ReactNode }) => <div data-testid="marker">{children}</div>,
+    TileLayer: () => <div data-testid="tile-layer" />, 
+    Marker: ({ children }: { children: React.ReactNode }) => <div data-testid="marker">{children}</div>, // Comma fixed here
     Popup: ({ children }: { children: React.ReactNode }) => <div data-testid="popup">{children}</div>,
     useMap: () => ({
         flyTo: vi.fn(),

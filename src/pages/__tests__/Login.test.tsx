@@ -14,11 +14,11 @@ describe('Login Page', () => {
   it('renders email and password inputs', () => {
     render(<Login />)
 
-    // Fallback to getByRole if getByLabelText is being weird about association
-    // Ideally getByLabelText is better for a11y testing, but let's unblock you first.
+    // Use role for email to be precise
     expect(screen.getByRole('textbox', { name: /email/i })).toBeInTheDocument()
-    // Password inputs don't have a role of 'textbox', so we use LabelText or Placeholder
-    expect(screen.getByLabelText(/password/i)).toBeInTheDocument()
+    
+    // FIX: Add { selector: 'input' } to ignore the "Show password" button
+    expect(screen.getByLabelText(/password/i, { selector: 'input' })).toBeInTheDocument()
   })
 
   it('validation prevents submission with empty fields', async () => {
@@ -46,9 +46,11 @@ describe('Login Page', () => {
       { route: '/login' }
     )
 
-    // Using robust selectors
     const emailInput = screen.getByRole('textbox', { name: /email/i })
-    const passwordInput = screen.getByLabelText(/password/i)
+    
+    // FIX: Specific selector here too
+    const passwordInput = screen.getByLabelText(/password/i, { selector: 'input' })
+    
     const submitBtn = screen.getByRole('button', { name: /sign in/i })
 
     await user.type(emailInput, 'user@example.com')
