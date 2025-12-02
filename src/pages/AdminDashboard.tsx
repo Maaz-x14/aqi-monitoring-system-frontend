@@ -1,14 +1,13 @@
 import { useQuery } from "@tanstack/react-query"
 import { fetchAdminDashboard } from "@/api/adminApi"
-import { getAqiColor } from "@/utils/aqiColors"
 import { useEffect, useRef, useState } from "react"
 import L from "leaflet"
 import "leaflet/dist/leaflet.css"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
 import { FiMapPin, FiActivity, FiWind, FiAlertTriangle } from "react-icons/fi"
+// FIX: Use standard default import for Navbar
 import Navbar from '@/components/layout/Navbar'
 
-// Corrected Interface matching your Backend JSON
 interface CityData {
   city: string
   latitude: number
@@ -20,15 +19,11 @@ interface CityData {
     o3: number
     healthAdvice: string
   }
-  // Recommendation can be null in your JSON!
   recommendation: {
     message: string
   } | null 
   forecast: Array<{
     aqiValue: number
-    pm25: number
-    pm10: number
-    o3: number
     timestamp: string
   }>
 }
@@ -51,22 +46,26 @@ export default function AdminDashboard() {
 
   // 1. Initialize Map
   useEffect(() => {
-    if (mapContainerRef.current && !mapRef.current) {
-      console.log("Initializing Leaflet Map...") // Debug Log
-      
-      mapRef.current = L.map(mapContainerRef.current).setView([30.3753, 69.3451], 5)
+    // Safety: Ensure container exists and map isn't already initialized
+    if (!mapContainerRef.current || mapRef.current) return;
 
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: "© OpenStreetMap contributors",
-        maxZoom: 19,
-      }).addTo(mapRef.current)
-      
-      // Force a resize to ensure tiles load correctly
-      setTimeout(() => {
-          mapRef.current?.invalidateSize();
-      }, 100);
-    }
+    console.log("Initializing Map...")
 
+    const mapInstance = L.map(mapContainerRef.current).setView([30.3753, 69.3451], 5)
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "© OpenStreetMap contributors",
+      maxZoom: 19,
+    }).addTo(mapInstance)
+
+    mapRef.current = mapInstance
+
+    // Force resize after mount to prevent gray tiles
+    setTimeout(() => {
+        mapInstance.invalidateSize();
+    }, 200);
+
+    // Cleanup: DESTROY map on unmount
     return () => {
       if (mapRef.current) {
         mapRef.current.remove()
@@ -79,15 +78,16 @@ export default function AdminDashboard() {
   useEffect(() => {
     if (!cities || !mapRef.current) return
 
-    console.log("Rendering Markers for cities:", cities.length) // Debug Log
-
-    // Clear existing markers
+    // Clear old markers
     markersRef.current.forEach((marker) => marker.remove())
     markersRef.current = []
 
     const bounds = L.latLngBounds([])
 
     cities.forEach((city: CityData) => {
+      // Safety: Skip if lat/lon is missing
+      if (!city.latitude || !city.longitude) return;
+
       const color = getAqiColorHex(city.current.aqiValue)
       
       const html = `
@@ -124,7 +124,6 @@ export default function AdminDashboard() {
       bounds.extend([city.latitude, city.longitude])
     })
 
-    // Fit bounds to show all markers
     if (bounds.isValid() && markersRef.current.length > 0) {
         mapRef.current.fitBounds(bounds, { padding: [50, 50] })
     }
@@ -152,7 +151,7 @@ export default function AdminDashboard() {
       <div className="w-full h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center text-red-600">
           <FiAlertTriangle className="w-12 h-12 mx-auto mb-4" />
-          Failed to load admin dashboard. Please check backend connection.
+          Failed to load admin dashboard.
         </div>
       </div>
     )
@@ -160,26 +159,29 @@ export default function AdminDashboard() {
 
   return (
     <div className="flex flex-col h-screen bg-gray-100 overflow-hidden">
-      <Navbar/>
+      <Navbar />
       
-      <div className="flex-1 flex relative">
-        {/* Map Container - Added explicit background color to verify container exists */}
-        <div className="flex-1 relative bg-gray-200">
-            {/* Floating Header */}
-            <div className="absolute left-4 bottom-4 z-[1000] bg-white/90 backdrop-blur-sm px-6 py-4 shadow-md rounded-xl border border-gray-200">
-            <div>
-                <h1 className="text-xl font-bold text-gray-900">National Monitor</h1>
-                <p className="text-xs text-gray-500">Tracking {cities?.length || 0} cities</p>
-            </div>
-            </div>
-
-            {/* Map Element - Ensure full height */}
-            <div ref={mapContainerRef} className="w-full h-full min-h-[500px]" />
+      {/* Main Content Area */}
+      <div className="flex-1 relative flex flex-col">
+        
+        {/* Floating Stats Card */}
+        <div className="absolute left-4 bottom-4 z-[400] bg-white/90 backdrop-blur-sm px-6 py-4 shadow-md rounded-xl border border-gray-200">
+          <div>
+            <h1 className="text-xl font-bold text-gray-900">National Monitor</h1>
+            <p className="text-xs text-gray-500">Tracking {cities?.length || 0} cities</p>
+          </div>
         </div>
+
+        {/* MAP CONTAINER - Explicit Styles added to force visibility */}
+        <div 
+            ref={mapContainerRef} 
+            className="w-full flex-grow z-0"
+            style={{ height: '100%', minHeight: '500px', background: '#e5e7eb' }} 
+        />
 
         {/* City Details Sidebar */}
         {selectedCity && (
-            <div className="w-[400px] bg-white shadow-2xl flex flex-col h-full border-l border-gray-200 z-20 absolute right-0 top-0 transition-transform duration-300 ease-in-out">
+            <div className="w-[400px] bg-white shadow-2xl flex flex-col h-full border-l border-gray-200 z-[500] absolute right-0 top-0">
             <div className="flex justify-between items-center p-5 border-b border-gray-100 bg-gray-50">
                 <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
                 <FiMapPin className="text-blue-600" />
@@ -220,7 +222,7 @@ export default function AdminDashboard() {
                     ].map((p) => (
                     <div key={p.label} className="bg-gray-50 rounded-lg p-3 text-center border border-gray-100">
                         <div className="text-[10px] text-gray-500 font-bold uppercase">{p.label}</div>
-                        <div className="text-lg font-bold text-gray-900 mt-1">{p.val.toFixed(1)}</div>
+                        <div className="text-lg font-bold text-gray-900 mt-1">{p.val ? p.val.toFixed(1) : '-'}</div>
                         <div className="text-[10px] text-gray-400">µg/m³</div>
                     </div>
                     ))}
@@ -233,8 +235,7 @@ export default function AdminDashboard() {
                     Smart Recommendation
                 </h3>
                 <p className="text-sm text-blue-800 leading-relaxed">
-                    {/* SAFE ACCESS to nullable recommendation */}
-                    {selectedCity.recommendation ? selectedCity.recommendation.message : "No recommendation available at this time."}
+                    {selectedCity.recommendation ? selectedCity.recommendation.message : "No recommendation available."}
                 </p>
                 </div>
 
