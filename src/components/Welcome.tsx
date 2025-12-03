@@ -63,15 +63,8 @@ export default function Welcome() {
                     <div className="p-3 bg-slate-800 rounded-xl border border-slate-700 shadow-inner">
                       <Wind className="w-8 h-8 text-cyan-400" />
                     </div>
-                    <div>
-                      <h3 className="text-lg font-bold text-white">Sensor Array</h3>
-                      <p className="text-sm text-slate-400">Rawalpindi Station</p>
-                    </div>
                  </div>
-                 <div className="flex flex-col items-end">
-                    <span className="text-3xl font-mono font-bold text-white">42</span>
-                    <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider">Good AQI</span>
-                 </div>
+                
               </div>
 
               {/* Stats Grid */}
