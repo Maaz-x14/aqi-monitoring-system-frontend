@@ -1,7 +1,16 @@
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Cloud, LogOut, Settings, History, LayoutDashboard, MessageSquare, Menu, X } from 'lucide-react';
+import { 
+  Cloud, 
+  LogOut, 
+  Settings, 
+  History, 
+  LayoutDashboard, 
+  MessageSquare, 
+  Menu, 
+  X 
+} from 'lucide-react';
 
 export default function Navbar() {
   const { logout } = useAuth();
@@ -14,65 +23,86 @@ export default function Navbar() {
     navigate('/login');
   };
 
-  const isActive = (path: string) => location.pathname === path ? "text-blue-600 bg-blue-50" : "text-gray-600 hover:bg-gray-50";
+  // Helper to determine active styles
+  const getLinkStyles = (path: string) => {
+    const active = location.pathname === path;
+    return {
+      container: active 
+        ? "bg-blue-600 text-blue-100 shadow-sm ring-1 ring-blue-100" 
+        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
+      icon: active
+        ? "bg-blue-600 text-white"
+        : "bg-gray-100 text-gray-500 group-hover:bg-gray-200 group-hover:text-gray-700"
+    };
+  };
+
+  const NavLink = ({ to, icon: Icon, label }: { to: string, icon: any, label: string }) => {
+    const styles = getLinkStyles(to);
+    return (
+      <Link 
+        to={to} 
+        className={`group flex items-center gap-3 px-5 py-2.5 rounded-full transition-all duration-300 font-medium text-base ${styles.container}`}
+      >
+        <div className={`p-2 rounded-full transition-colors duration-300 ${styles.icon}`}>
+           <Icon className="w-5 h-5" />
+        </div>
+        <span>{label}</span>
+      </Link>
+    );
+  };
 
   return (
-    <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 relative z-[9999]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
+    <nav className="sticky top-0 z-[9999] bg-white/90 backdrop-blur-lg border-b border-gray-100 shadow-sm h-24 flex items-center">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center">
           
           {/* Logo Section */}
           <div className="flex items-center">
-            <Link to="/" className="flex items-center gap-2 text-xl font-bold text-blue-600">
-                <Cloud className="w-8 h-8" />
-                <span className="hidden sm:inline">AQI Monitor</span>
+            <Link to="/" className="group flex items-center gap-3">
+                <div className="p-3 bg-blue-600 rounded-2xl shadow-lg shadow-blue-600/20 group-hover:scale-105 transition-transform duration-300">
+                    <Cloud className="w-7 h-7 text-white" />
+                </div>
+                <div className="flex flex-col">
+                    <span className="text-xl font-bold text-gray-900 tracking-tight leading-none">AQI Monitor</span>
+                    <span className="text-xs font-medium text-blue-600 tracking-wide uppercase">System Active</span>
+                </div>
             </Link>
-            
-            {/* Desktop Navigation - Hidden on Mobile */}
-            <div className="hidden md:flex items-center gap-2 ml-8">
-                <Link to="/dashboard" className={`px-3 py-2 rounded-md text-sm font-medium flex items-center gap-2 ${isActive('/dashboard')}`}>
-                    <LayoutDashboard className="w-4 h-4" />
-                    Dashboard
-                </Link>
-                <Link to="/history" className={`px-3 py-2 rounded-md text-sm font-medium flex items-center gap-2 ${isActive('/history')}`}>
-                    <History className="w-4 h-4" />
-                    History
-                </Link>
-                <Link to="/chat" className={`px-3 py-2 rounded-md text-sm font-medium flex items-center gap-2 ${isActive('/chat')}`}>
-                    <MessageSquare className="w-4 h-4" />
-                    AI Assistant
-                </Link>
-                {/* <Link to="/admin" className={`px-3 py-2 rounded-md text-sm font-medium flex items-center gap-2 ${isActive('/admin')}`}>
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M3 13H21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                    <path d="M3 6H21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                    <path d="M3 20H21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                  Admin
-                </Link> */}
-            </div>
           </div>
 
-          {/* Right Side Buttons */}
-          <div className="flex items-center gap-2">
-            <Link to="/settings" className={`p-2 rounded-full ${isActive('/settings')}`} title="Settings">
-                <Settings className="w-5 h-5" />
+           {/* Desktop Navigation - Centered */}
+           <div className="hidden lg:flex items-center gap-2">
+                <NavLink to="/dashboard" icon={LayoutDashboard} label="Dashboard" />
+                <NavLink to="/history" icon={History} label="History" />
+                <NavLink to="/chat" icon={MessageSquare} label="AI Assistant" />
+           </div>
+
+          {/* Right Side Actions */}
+          <div className="flex items-center gap-4">
+            
+            <Link 
+                to="/settings" 
+                className={`hidden md:flex p-3 rounded-full transition-all duration-300 ${location.pathname === '/settings' ? 'bg-gray-100 text-gray-900 rotate-90' : 'text-gray-500 hover:bg-gray-50 hover:text-blue-600 hover:rotate-90'}`}
+                title="Settings"
+            >
+                <Settings className="w-6 h-6" />
             </Link>
             
             <button 
                 onClick={handleLogout} 
-                className="hidden md:flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-md transition-colors shadow-sm"
+                className="hidden md:flex items-center gap-3 pl-4 pr-6 py-2.5 rounded-full text-sm font-semibold text-red-600 bg-red-50 hover:bg-red-100 hover:shadow-md transition-all duration-300 group"
             >
-              <LogOut className="w-4 h-4" />
+              <div className="p-1.5 bg-white rounded-full group-hover:scale-110 transition-transform">
+                  <LogOut className="w-4 h-4" />
+              </div>
               Logout
             </button>
 
             {/* Mobile Menu Button */}
             <button 
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="md:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none"
+                className="lg:hidden p-3 rounded-xl text-gray-600 hover:bg-gray-100 transition-colors"
             >
-                {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                {isMobileMenuOpen ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
             </button>
           </div>
         </div>
@@ -80,37 +110,51 @@ export default function Navbar() {
 
       {/* Mobile Menu Dropdown */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-white border-t border-gray-200">
-            <div className="px-2 pt-2 pb-3 space-y-1">
+        <div className="absolute top-24 left-0 w-full bg-white border-b border-gray-100 shadow-xl lg:hidden animate-in slide-in-from-top-5 fade-in duration-200">
+            <div className="px-6 py-6 space-y-3">
                 <Link 
                     to="/dashboard" 
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className={`block px-3 py-2 rounded-md text-base font-medium flex items-center gap-2 ${isActive('/dashboard')}`}
+                    className="flex items-center gap-4 p-4 rounded-2xl bg-gray-50 text-gray-900 font-medium"
                 >
-                    <LayoutDashboard className="w-5 h-5" />
+                    <div className="p-2 bg-white rounded-full shadow-sm"><LayoutDashboard className="w-6 h-6 text-blue-600" /></div>
                     Dashboard
                 </Link>
+                
                 <Link 
                     to="/history" 
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className={`block px-3 py-2 rounded-md text-base font-medium flex items-center gap-2 ${isActive('/history')}`}
+                    className="flex items-center gap-4 p-4 rounded-2xl hover:bg-gray-50 text-gray-600 font-medium transition-colors"
                 >
-                    <History className="w-5 h-5" />
+                    <div className="p-2 bg-gray-100 rounded-full"><History className="w-6 h-6" /></div>
                     History
                 </Link>
+
                 <Link 
                     to="/chat" 
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className={`block px-3 py-2 rounded-md text-base font-medium flex items-center gap-2 ${isActive('/chat')}`}
+                    className="flex items-center gap-4 p-4 rounded-2xl hover:bg-gray-50 text-gray-600 font-medium transition-colors"
                 >
-                    <MessageSquare className="w-5 h-5" />
+                    <div className="p-2 bg-gray-100 rounded-full"><MessageSquare className="w-6 h-6" /></div>
                     AI Assistant
                 </Link>
+
+                <div className="h-px bg-gray-100 my-2"></div>
+
+                <Link 
+                    to="/settings" 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="flex items-center gap-4 p-4 rounded-2xl hover:bg-gray-50 text-gray-600 font-medium transition-colors"
+                >
+                    <div className="p-2 bg-gray-100 rounded-full"><Settings className="w-6 h-6" /></div>
+                    Settings
+                </Link>
+
                 <button 
                     onClick={handleLogout}
-                    className="w-full text-left block px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-red-50 flex items-center gap-2"
+                    className="w-full flex items-center gap-4 p-4 rounded-2xl bg-red-50 text-red-600 font-medium"
                 >
-                    <LogOut className="w-5 h-5" />
+                    <div className="p-2 bg-white rounded-full"><LogOut className="w-6 h-6" /></div>
                     Logout
                 </button>
             </div>
