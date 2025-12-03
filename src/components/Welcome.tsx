@@ -72,6 +72,7 @@ export default function Welcome() {
                     <span className="text-3xl font-mono font-bold text-white">42</span>
                     <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider">Good AQI</span>
                  </div>
+                
               </div>
 
               {/* Stats Grid */}
