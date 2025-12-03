@@ -5,8 +5,8 @@ import L from "leaflet"
 import "leaflet/dist/leaflet.css"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
 import { FiMapPin, FiActivity, FiWind, FiAlertTriangle } from "react-icons/fi"
+import { Navbar } from "@/components/layout/NavbarAdmin"
 // FIX: Use standard default import for Navbar
-import Navbar from '@/components/layout/Navbar'
 
 interface CityData {
   city: string

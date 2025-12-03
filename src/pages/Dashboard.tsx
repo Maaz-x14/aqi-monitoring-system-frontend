@@ -7,385 +7,22 @@ import { fetchCurrentUser } from "@/api/userApi"
 import { fetchCurrentAqi, fetchRecommendation, fetchForecast } from "@/api/aqiApi"
 import Navbar from "@/components/layout/Navbar"
 import { getAqiColor } from "@/utils/aqiColors"
-import {  FaReact as Activity, FaWind as Wind,FaEyeDropper as Droplets,FaEye as Eye,FaAngleUp as TrendingUp, FaGithub as Github, FaLinkedin as Linkedin,FaMailchimp as Mail, FaHeart as Heart  } from "react-icons/fa"
+import { 
+  Wind, 
+  Droplets, 
+  Eye, 
+  Activity, 
+  TrendingUp, 
+  Github, 
+  Linkedin, 
+  Mail, 
+  Heart,
+  Loader2,
+  Map as MapIcon
+} from "lucide-react"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
 import { MapCard } from "@/components/map-card"
 import Welcome from "@/components/Welcome"
-// const styleSheet = document.createElement("style")
-// styleSheet.textContent = `
-//   @keyframes gradientRise {
-//     from {
-//       background-position: 0% 100%;
-//     }
-//     to {
-//       background-position: 0% 50%;
-//     }
-//   }
-//   .card-hover {
-//     position: relative;
-//     overflow: hidden;
-//   }
-//   .card-hover::before {
-//     content: '';
-//     position: absolute;
-//     inset: 0;
-//     background: linear-gradient(to top, rgba(255,255,255,0.1) 0%, transparent 50%);
-//     opacity: 0;
-//     transition: opacity 0.6s ease-out;
-//     pointer-events: none;
-//   }
-//   .card-hover:hover::before {
-//     opacity: 1;
-//     animation: gradientRise 0.6s ease-out forwards;
-//   }
-//   .icon-animate {
-//     transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.3s ease;
-//   }
-//   .card-hover:hover .icon-animate {
-//     transform: scale(1.15) rotate(-5deg);
-//   }
-// `
-// if (typeof document !== "undefined") {
-//   document.head.appendChild(styleSheet)
-// }
-
-// export default function Dashboard() {
-//   const navigate = useNavigate()
-//   const { data: user, isLoading: userLoading } = useQuery({
-//     queryKey: ["user"],
-//     queryFn: fetchCurrentUser,
-//   })
-
-//   const city = user?.city
-
-//   useEffect(() => {
-//     if (!userLoading && user && !user.city) {
-//       navigate("/settings")
-//     }
-//   }, [user, userLoading, navigate])
-
-//   const { data: aqi, isLoading: aqiLoading } = useQuery({
-//     queryKey: ["aqi", city],
-//     queryFn: () => fetchCurrentAqi(city!),
-//     enabled: !!city,
-//     refetchInterval: 900000,
-//   })
-
-//   const { data: recommendation } = useQuery({
-//     queryKey: ["recommendation", city],
-//     queryFn: () => fetchRecommendation(city!),
-//     enabled: !!city,
-//   })
-
-//   const { data: forecast } = useQuery({
-//     queryKey: ["forecast", city],
-//     queryFn: () => fetchForecast(city!),
-//     enabled: !!city,
-//   })
-
-//   if (userLoading || (city && aqiLoading)) {
-//     return (
-//       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 flex flex-col">
-//         <Navbar />
-//         <div className="flex-1 flex justify-center items-center text-indigo-400 text-lg font-light">
-//           Loading data for {city || "you"}...
-//         </div>
-//       </div>
-//     )
-//   }
-
-//   if (!city) return null
-
-//   const displayAqi = aqi?.aqiValue?.toFixed(0) ?? "--"
-//   const aqiColorClass = aqi?.aqiValue ? getAqiColor(aqi.aqiValue) : "bg-gradient-to-br from-gray-200 to-gray-300"
-
-//   return (
-//     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex flex-col">
-//       <Navbar />
-//       <Welcome/>
-//       <main className="w-full flex-1">
-//         <div className="grid grid-cols-4 gap-0">
-//           {/* MAP CARD - Spans 3 columns */}
-//           <div className="col-span-3 border-r border-b border-indigo-200 card-hover bg-white transition-all duration-300 hover:shadow-xl hover:shadow-blue-200/40">
-//             <div className="h-96 overflow-hidden -z-10">
-//               <MapCard
-//                 city={city}
-//                 aqiValue={Number(displayAqi)}
-//                 aqiColor={aqiColorClass}
-//                 healthAdvice={aqi?.healthAdvice}
-//               />
-//             </div>
-//           </div>
-
-//           {/* CURRENT AQI BIG CARD - Spans 1 column */}
-//           <div
-//             className={`border-r border-b border-indigo-200 card-hover transition-all ${aqiColorClass} duration-300 hover:shadow-xl hover:shadow-blue-200/50`}
-//           >
-//             <div className="h-96 flex flex-col justify-between p-6">
-//               <div>
-//                 <p className="text-xs font-bold opacity-75 uppercase tracking-widest text-gray-100">Current AQI</p>
-//                 <h2 className="text-sm font-semibold opacity-90 mt-1 line-clamp-2 text-gray-100">{city}</h2>
-//               </div>
-//               <div className="flex flex-col items-center justify-center flex-1">
-//                 <div className="text-7xl font-black tracking-tighter text-gray-100">{displayAqi}</div>
-//                 <p className="text-xs font-medium opacity-70 mt-2 text-center max-w-xs text-gray-100">
-//                   {aqi?.healthAdvice || "No data"}
-//                 </p>
-//               </div>
-//             </div>
-//           </div>
-
-//           {/* RECOMMENDATION CARD - Spans 2 columns */}
-//           <div className="col-span-2 border-r border-indigo-200 bg-gradient-to-br from-blue-50 to-cyan-50 card-hover transition-all duration-300 hover:shadow-xl hover:shadow-cyan-200/40">
-//             <div className="h-56 flex flex-col justify-between p-8">
-//               <div>
-//                 <div className="flex items-center gap-3 mb-4">
-//                   <Activity className="w-6 h-6 text-cyan-500 icon-animate" />
-//                   <p className="text-xs font-bold text-indigo-700 uppercase tracking-widest">Activity Guide</p>
-//                 </div>
-//                 <p className="text-lg font-semibold text-gray-900 leading-tight">
-//                   {recommendation?.message || "Analyzing forecast..."}
-//                 </p>
-//               </div>
-//             </div>
-//           </div>
-
-//           {/* POLLUTANTS CARD - Spans 2 columns */}
-//           <div className="col-span-2 border-b border-indigo-200 bg-gradient-to-br from-amber-50 to-orange-50 card-hover transition-all duration-300 hover:shadow-xl hover:shadow-orange-200/40">
-//             <div className="h-56 flex flex-col justify-between p-8">
-//               <p className="text-xs font-bold text-amber-700 uppercase tracking-widest mb-1">Pollutant Breakdown</p>
-//               <div className="space-y-4 flex-1 flex flex-col justify-center">
-//                 {/* PM2.5 */}
-//                 <div className="flex justify-between items-center pb-2 border-b border-amber-200">
-//                   <div className="flex items-center gap-2">
-//                     <Wind className="w-4 h-4 text-amber-500 icon-animate" />
-//                     <span className="text-sm text-gray-700 font-medium">PM2.5</span>
-//                   </div>
-//                   <span className="text-lg font-bold text-gray-900">
-//                     {aqi?.pm25?.toFixed(1) ?? "-"}
-//                     <span className="text-xs text-gray-500 font-normal ml-1">µg/m³</span>
-//                   </span>
-//                 </div>
-//                 {/* PM10 */}
-//                 <div className="flex justify-between items-center pb-2 border-b border-amber-200">
-//                   <div className="flex items-center gap-2">
-//                     <Droplets className="w-4 h-4 text-orange-500 icon-animate" />
-//                     <span className="text-sm text-gray-700 font-medium">PM10</span>
-//                   </div>
-//                   <span className="text-lg font-bold text-gray-900">
-//                     {aqi?.pm10?.toFixed(1) ?? "-"}
-//                     <span className="text-xs text-gray-500 font-normal ml-1">µg/m³</span>
-//                   </span>
-//                 </div>
-//                 {/* Ozone */}
-//                 <div className="flex justify-between items-center">
-//                   <div className="flex items-center gap-2">
-//                     <Eye className="w-4 h-4 text-amber-600 icon-animate" />
-//                     <span className="text-sm text-gray-700 font-medium">Ozone</span>
-//                   </div>
-//                   <span className="text-lg font-bold text-gray-900">
-//                     {aqi?.o3?.toFixed(1) ?? "-"}
-//                     <span className="text-xs text-gray-500 font-normal ml-1">µg/m³</span>
-//                   </span>
-//                 </div>
-//               </div>
-//             </div>
-//           </div>
-
-//           {/* FORECAST CHART - Spans full width */}
-//           <div className="col-span-4 border-t border-indigo-200 bg-gradient-to-br from-white via-blue-50 to-indigo-50 card-hover transition-all duration-300 hover:shadow-xl hover:shadow-blue-200/40">
-//             <div className="p-8">
-//               <div className="flex items-center gap-2 mb-6">
-//                 <TrendingUp className="w-5 h-5 text-indigo-500 icon-animate" />
-//                 <p className="text-xs font-bold text-indigo-700 uppercase tracking-widest">48-Hour Forecast</p>
-//               </div>
-//               <div className="h-80 w-full">
-//                 <ResponsiveContainer width="100%" height="100%">
-//                   <LineChart data={forecast || []}>
-//                     <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
-//                     <XAxis
-//                       dataKey="timestamp"
-//                       tickFormatter={(time) => new Date(time).getHours() + ":00"}
-//                       minTickGap={30}
-//                       stroke="#818cf8"
-//                       style={{ fontSize: "12px" }}
-//                     />
-//                     <YAxis stroke="#818cf8" style={{ fontSize: "12px" }} />
-//                     <Tooltip
-//                       labelFormatter={(label) => new Date(label).toLocaleString()}
-//                       contentStyle={{
-//                         backgroundColor: "#ffffff",
-//                         border: "2px solid #e0e7ff",
-//                         borderRadius: "8px",
-//                         color: "#1f2937",
-//                       }}
-//                     />
-//                     <Line
-//                       type="monotone"
-//                       dataKey="aqiValue"
-//                       stroke="#6366f1"
-//                       strokeWidth={3}
-//                       dot={false}
-//                       name="AQI"
-//                       isAnimationActive={false}
-//                     />
-//                   </LineChart>
-//                 </ResponsiveContainer>
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-//       </main>
-
-//       <footer className="border-t border-indigo-200 bg-gradient-to-r from-blue-50 to-indigo-50 mt-auto">
-//         <div className="w-full px-8 py-12">
-//           <div className="grid grid-cols-4 gap-8 mb-12">
-//             {/* About Section */}
-//             <div className="col-span-1">
-//               <h3 className="text-sm font-bold text-indigo-700 uppercase tracking-widest mb-4">About</h3>
-//               <p className="text-sm text-gray-600 leading-relaxed">
-//                 Monitor air quality in real-time and make informed decisions about your health and outdoor activities.
-//               </p>
-//             </div>
-
-//             {/* Quick Links */}
-//             <div className="col-span-1">
-//               <h3 className="text-sm font-bold text-indigo-700 uppercase tracking-widest mb-4">Quick Links</h3>
-//               <ul className="space-y-2">
-//                 <li>
-//                   <a
-//                     href="/dashboard"
-//                     className="text-sm text-gray-600 hover:text-indigo-600 transition-colors duration-300"
-//                   >
-//                     Dashboard
-//                   </a>
-//                 </li>
-//                 <li>
-//                   <a
-//                     href="/settings"
-//                     className="text-sm text-gray-600 hover:text-indigo-600 transition-colors duration-300"
-//                   >
-//                     Settings
-//                   </a>
-//                 </li>
-//                 <li>
-//                   <a href="#" className="text-sm text-gray-600 hover:text-indigo-600 transition-colors duration-300">
-//                     Privacy Policy
-//                   </a>
-//                 </li>
-//                 <li>
-//                   <a href="#" className="text-sm text-gray-600 hover:text-indigo-600 transition-colors duration-300">
-//                     Terms of Service
-//                   </a>
-//                 </li>
-//               </ul>
-//             </div>
-
-//             {/* Resources */}
-//             <div className="col-span-1">
-//               <h3 className="text-sm font-bold text-indigo-700 uppercase tracking-widest mb-4">Resources</h3>
-//               <ul className="space-y-2">
-//                 <li>
-//                   <a href="#" className="text-sm text-gray-600 hover:text-indigo-600 transition-colors duration-300">
-//                     Air Quality Guide
-//                   </a>
-//                 </li>
-//                 <li>
-//                   <a href="#" className="text-sm text-gray-600 hover:text-indigo-600 transition-colors duration-300">
-//                     Health Tips
-//                   </a>
-//                 </li>
-//                 <li>
-//                   <a href="#" className="text-sm text-gray-600 hover:text-indigo-600 transition-colors duration-300">
-//                     Blog
-//                   </a>
-//                 </li>
-//                 <li>
-//                   <a href="#" className="text-sm text-gray-600 hover:text-indigo-600 transition-colors duration-300">
-//                     FAQ
-//                   </a>
-//                 </li>
-//               </ul>
-//             </div>
-
-//             {/* Social Links */}
-//             <div className="col-span-1">
-//               <h3 className="text-sm font-bold text-indigo-700 uppercase tracking-widest mb-4">Follow Us</h3>
-//               <div className="flex gap-4">
-//                 <a
-//                   href="#"
-//                   className="p-2 rounded-lg bg-white border border-indigo-200 text-indigo-600 hover:bg-indigo-50 hover:shadow-lg transition-all duration-300 card-hover"
-//                 >
-//                   <Github className="w-4 h-4 icon-animate" />
-//                 </a>
-//                 <a
-//                   href="#"
-//                   className="p-2 rounded-lg bg-white border border-indigo-200 text-indigo-600 hover:bg-indigo-50 hover:shadow-lg transition-all duration-300 card-hover"
-//                 >
-//                   <Linkedin className="w-4 h-4 icon-animate" />
-//                 </a>
-//                 <a
-//                   href="#"
-//                   className="p-2 rounded-lg bg-white border border-indigo-200 text-indigo-600 hover:bg-indigo-50 hover:shadow-lg transition-all duration-300 card-hover"
-//                 >
-//                   <Mail className="w-4 h-4 icon-animate" />
-//                 </a>
-//               </div>
-//             </div>
-//           </div>
-
-//           {/* Divider */}
-//           <div className="border-t border-indigo-200 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-//             <p className="text-sm text-gray-600">© 2025 Air Quality Dashboard. All rights reserved.</p>
-//             <div className="flex items-center gap-1 text-sm text-gray-600">
-//               Made with
-//               <Heart className="w-4 h-4 text-red-500 icon-animate" />
-//               by the AHTISAM,MAAZ,ZAEEM,HUSSNAIN,HAMZA,TAYYAB
-//             </div>
-//           </div>
-//         </div>
-//       </footer>
-//     </div>
-//   )
-// }
-
-const styleSheet = document.createElement("style")
-styleSheet.textContent = `
-  @keyframes gradientRise {
-    from {
-      background-position: 0% 100%;
-    }
-    to {
-      background-position: 0% 50%;
-    }
-  }
-  .card-hover {
-    position: relative;
-    overflow: hidden;
-  }
-  .card-hover::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, rgba(255,255,255,0.1) 0%, transparent 50%);
-    opacity: 0;
-    transition: opacity 0.6s ease-out;
-    pointer-events: none;
-  }
-  .card-hover:hover::before {
-    opacity: 1;
-    animation: gradientRise 0.6s ease-out forwards;
-  }
-  .icon-animate {
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.3s ease;
-  }
-  .card-hover:hover .icon-animate {
-    transform: scale(1.15) rotate(-5deg);
-  }
-`
-if (typeof document !== "undefined") {
-  document.head.appendChild(styleSheet)
-}
 
 export default function Dashboard() {
   const navigate = useNavigate()
@@ -425,8 +62,9 @@ export default function Dashboard() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 flex flex-col">
         <Navbar />
-        <div className="flex-1 flex justify-center items-center text-indigo-400 text-lg font-light">
-          Loading data for {city || "you"}...
+        <div className="flex-1 flex flex-col justify-center items-center text-blue-600 gap-4">
+          <Loader2 className="w-10 h-10 animate-spin" />
+          <p className="text-lg font-medium text-gray-600">Syncing environmental data for {city || "you"}...</p>
         </div>
       </div>
     )
@@ -435,252 +73,270 @@ export default function Dashboard() {
   if (!city) return null
 
   const displayAqi = aqi?.aqiValue?.toFixed(0) ?? "--"
-  const aqiColorClass = aqi?.aqiValue ? getAqiColor(aqi.aqiValue) : "bg-gradient-to-br from-gray-200 to-gray-300"
+  // Ensure aqiColorClass provides a background color class (e.g., bg-green-500)
+  const aqiColorClass = aqi?.aqiValue ? getAqiColor(aqi.aqiValue) : "bg-gray-400"
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex flex-col font-sans">
       <Navbar />
+      
+      {/* Welcome Section */}
       <Welcome />
-      <main className="w-full flex-1">
-        <div className="grid grid-cols-4 gap-0">
-          {/* MAP CARD - Spans 3 columns */}
-          <div className="col-span-3 border-r border-b border-indigo-200 card-hover bg-white transition-all duration-300 hover:shadow-xl hover:shadow-blue-200/40">
-            <div className="h-96 overflow-hidden -z-10">
-              <MapCard
-                city={city}
-                aqiValue={Number(displayAqi)}
-                aqiColor={aqiColorClass}
-                healthAdvice={aqi?.healthAdvice}
-              />
+
+      <main className="w-full flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 relative z-20">
+        
+        {/* Top Grid: Map & AQI Card */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+          
+          {/* MAP CARD - Takes 2/3 width */}
+          <div className="lg:col-span-2 h-[400px] bg-white rounded-3xl shadow-xl shadow-blue-900/5 border border-white/50 overflow-hidden relative group">
+            <div className="absolute top-4 left-4 z-10 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full shadow-sm flex items-center gap-2">
+                <MapIcon className="w-4 h-4 text-blue-600" />
+                <span className="text-xs font-bold uppercase tracking-wider text-gray-700">Live Map View</span>
+            </div>
+            <div className="w-full h-full transition-transform duration-700 group-hover:scale-105">
+               <MapCard
+                 city={city}
+                 aqiValue={Number(displayAqi)}
+                 aqiColor={aqiColorClass}
+                 healthAdvice={aqi?.healthAdvice}
+               />
             </div>
           </div>
 
-          {/* CURRENT AQI BIG CARD - Spans 1 column */}
-          <div
-            className={`border-r border-indigo-200 card-hover ${aqiColorClass} transition-all duration-300 hover:shadow-xl hover:shadow-blue-200/50`}
-          >
-            <div className="h-96 flex flex-col justify-between p-6">
-              <div>
-                <p className="text-xs font-bold opacity-75 uppercase tracking-widest text-white">Current AQI</p>
-                <h2 className="text-sm font-semibold opacity-90 mt-1 line-clamp-2 text-white">{city}</h2>
-              </div>
-              <div className="flex flex-col items-center justify-center flex-1">
-                <div className="text-7xl font-black tracking-tighter text-white">{displayAqi}</div>
-                <p className="text-xs font-medium opacity-70 mt-2 text-center max-w-xs text-white">
-                  {aqi?.healthAdvice || "No data"}
-                </p>
-              </div>
+          {/* CURRENT AQI CARD - Takes 1/3 width */}
+          <div className={`lg:col-span-1 h-[400px] rounded-3xl shadow-xl shadow-blue-900/10 overflow-hidden relative flex flex-col ${aqiColorClass}`}>
+            {/* Glass Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-black/10 pointer-events-none" />
+            
+            <div className="relative z-10 flex flex-col h-full p-8 text-white">
+               <div className="flex justify-between items-start">
+                   <div>
+                       <p className="text-sm font-bold opacity-80 uppercase tracking-widest">Current Status</p>
+                       <h2 className="text-2xl font-bold mt-1">{city}</h2>
+                   </div>
+                   <div className="p-2 bg-white/20 backdrop-blur-md rounded-xl">
+                       <Activity className="w-6 h-6 text-white" />
+                   </div>
+               </div>
+
+               <div className="flex-1 flex flex-col items-center justify-center py-6">
+                   <div className="text-8xl font-black tracking-tighter drop-shadow-md">
+                       {displayAqi}
+                   </div>
+                   <div className="px-4 py-1.5 bg-white/20 backdrop-blur-md rounded-full mt-4 border border-white/30">
+                       <span className="text-sm font-bold uppercase tracking-wide">US AQI Index</span>
+                   </div>
+               </div>
+
+               <div className="mt-auto bg-black/20 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
+                   <p className="text-sm font-medium leading-relaxed text-center opacity-95">
+                       {aqi?.healthAdvice || "Data unavailable"}
+                   </p>
+               </div>
             </div>
           </div>
         </div>
 
-        <div className="flex flex-col gap-0">
-          {/* RECOMMENDATION CARD */}
-          <div className="border-b border-indigo-200 bg-gradient-to-br from-blue-50 to-cyan-50 card-hover transition-all duration-300 hover:shadow-xl hover:shadow-cyan-200/40">
-            <div className="p-8">
-              <div>
-                <div className="flex items-center gap-3 mb-4">
-                  <Activity className="w-6 h-6 text-cyan-500 icon-animate" />
-                  <p className="text-xs font-bold text-indigo-700 uppercase tracking-widest">Activity Guide</p>
-                </div>
-                <p className="text-lg font-semibold text-gray-900 leading-tight">
-                  {recommendation?.message || "Analyzing forecast..."}
+        {/* Middle: Recommendation Banner */}
+        <div className="mb-6 bg-white rounded-3xl shadow-lg shadow-blue-900/5 border border-indigo-50 p-6 flex items-start sm:items-center gap-6 relative overflow-hidden group">
+            <div className="absolute right-0 top-0 w-64 h-64 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-full blur-3xl opacity-50 -mr-16 -mt-16 transition-opacity group-hover:opacity-80"></div>
+            
+            <div className="hidden sm:flex shrink-0 p-4 bg-blue-50 rounded-2xl text-blue-600 group-hover:scale-110 transition-transform duration-300">
+                <Activity className="w-8 h-8" />
+            </div>
+            
+            <div className="relative z-10">
+                <p className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-1">AI Health Insight</p>
+                <p className="text-lg sm:text-xl font-medium text-gray-800 leading-relaxed">
+                   {recommendation?.message || "Analyzing local atmosphere to generate health insights..."}
                 </p>
-              </div>
             </div>
-          </div>
+        </div>
 
-          {/* POLLUTANTS CARD */}
-          <div className="border-b border-indigo-200 bg-gradient-to-br from-amber-50 to-orange-50 card-hover transition-all duration-300 hover:shadow-xl hover:shadow-orange-200/40">
-            <div className="p-8">
-              <p className="text-xs font-bold text-amber-700 uppercase tracking-widest mb-4">Pollutant Breakdown</p>
-              <div className="space-y-4">
-                {/* PM2.5 */}
-                <div className="flex justify-between items-center pb-2 border-b border-amber-200">
-                  <div className="flex items-center gap-2">
-                    <Wind className="w-4 h-4 text-amber-500 icon-animate" />
-                    <span className="text-sm text-gray-700 font-medium">PM2.5</span>
-                  </div>
-                  <span className="text-lg font-bold text-gray-900">
-                    {aqi?.pm25?.toFixed(1) ?? "-"}
-                    <span className="text-xs text-gray-500 font-normal ml-1">µg/m³</span>
-                  </span>
-                </div>
-                {/* PM10 */}
-                <div className="flex justify-between items-center pb-2 border-b border-amber-200">
-                  <div className="flex items-center gap-2">
-                    <Droplets className="w-4 h-4 text-orange-500 icon-animate" />
-                    <span className="text-sm text-gray-700 font-medium">PM10</span>
-                  </div>
-                  <span className="text-lg font-bold text-gray-900">
-                    {aqi?.pm10?.toFixed(1) ?? "-"}
-                    <span className="text-xs text-gray-500 font-normal ml-1">µg/m³</span>
-                  </span>
-                </div>
-                {/* Ozone */}
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-2">
-                    <Eye className="w-4 h-4 text-amber-600 icon-animate" />
-                    <span className="text-sm text-gray-700 font-medium">Ozone</span>
-                  </div>
-                  <span className="text-lg font-bold text-gray-900">
-                    {aqi?.o3?.toFixed(1) ?? "-"}
-                    <span className="text-xs text-gray-500 font-normal ml-1">µg/m³</span>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
+        {/* Bottom Grid: Pollutants & Forecast */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            {/* Pollutants Breakdown */}
+            <div className="lg:col-span-1 bg-white rounded-3xl shadow-lg shadow-blue-900/5 border border-indigo-50 p-8">
+                <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2 mb-6">
+                    <Wind className="w-5 h-5 text-gray-400" />
+                    Pollutants
+                </h3>
+                
+                <div className="space-y-6">
+                    {/* PM 2.5 */}
+                    <div className="group p-4 rounded-2xl bg-gray-50 hover:bg-amber-50 transition-colors duration-300">
+                        <div className="flex items-center justify-between mb-2">
+                             <div className="flex items-center gap-3">
+                                <div className="p-2 bg-white rounded-lg shadow-sm text-amber-500">
+                                    <Wind className="w-4 h-4" />
+                                </div>
+                                <span className="font-medium text-gray-700">PM 2.5</span>
+                             </div>
+                             <span className="text-xs font-semibold text-gray-400">Fine Particles</span>
+                        </div>
+                        <div className="flex items-end gap-1 pl-11">
+                            <span className="text-2xl font-bold text-gray-900">{aqi?.pm25?.toFixed(1) ?? "-"}</span>
+                            <span className="text-sm text-gray-500 mb-1">µg/m³</span>
+                        </div>
+                    </div>
 
-          {/* FORECAST CHART */}
-          <div className="border-b border-indigo-200 bg-gradient-to-br from-white via-blue-50 to-indigo-50 card-hover transition-all duration-300 hover:shadow-xl hover:shadow-blue-200/40">
-            <div className="p-8">
-              <div className="flex items-center gap-2 mb-6">
-                <TrendingUp className="w-5 h-5 text-indigo-500 icon-animate" />
-                <p className="text-xs font-bold text-indigo-700 uppercase tracking-widest">48-Hour Forecast</p>
-              </div>
-              <div className="h-80 w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={forecast || []}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
-                    <XAxis
-                      dataKey="timestamp"
-                      tickFormatter={(time) => new Date(time).getHours() + ":00"}
-                      minTickGap={30}
-                      stroke="#818cf8"
-                      style={{ fontSize: "12px" }}
-                    />
-                    <YAxis stroke="#818cf8" style={{ fontSize: "12px" }} />
-                    <Tooltip
-                      labelFormatter={(label) => new Date(label).toLocaleString()}
-                      contentStyle={{
-                        backgroundColor: "#ffffff",
-                        border: "2px solid #e0e7ff",
-                        borderRadius: "8px",
-                        color: "#1f2937",
-                      }}
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="aqiValue"
-                      stroke="#6366f1"
-                      strokeWidth={3}
-                      dot={false}
-                      name="AQI"
-                      isAnimationActive={false}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
+                    {/* PM 10 */}
+                    <div className="group p-4 rounded-2xl bg-gray-50 hover:bg-orange-50 transition-colors duration-300">
+                        <div className="flex items-center justify-between mb-2">
+                             <div className="flex items-center gap-3">
+                                <div className="p-2 bg-white rounded-lg shadow-sm text-orange-500">
+                                    <Droplets className="w-4 h-4" />
+                                </div>
+                                <span className="font-medium text-gray-700">PM 10</span>
+                             </div>
+                             <span className="text-xs font-semibold text-gray-400">Coarse Particles</span>
+                        </div>
+                        <div className="flex items-end gap-1 pl-11">
+                            <span className="text-2xl font-bold text-gray-900">{aqi?.pm10?.toFixed(1) ?? "-"}</span>
+                            <span className="text-sm text-gray-500 mb-1">µg/m³</span>
+                        </div>
+                    </div>
+
+                    {/* Ozone */}
+                    <div className="group p-4 rounded-2xl bg-gray-50 hover:bg-purple-50 transition-colors duration-300">
+                        <div className="flex items-center justify-between mb-2">
+                             <div className="flex items-center gap-3">
+                                <div className="p-2 bg-white rounded-lg shadow-sm text-purple-500">
+                                    <Eye className="w-4 h-4" />
+                                </div>
+                                <span className="font-medium text-gray-700">Ozone (O3)</span>
+                             </div>
+                             <span className="text-xs font-semibold text-gray-400">Gas</span>
+                        </div>
+                        <div className="flex items-end gap-1 pl-11">
+                            <span className="text-2xl font-bold text-gray-900">{aqi?.o3?.toFixed(1) ?? "-"}</span>
+                            <span className="text-sm text-gray-500 mb-1">µg/m³</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
+
+            {/* Forecast Chart */}
+            <div className="lg:col-span-2 bg-white rounded-3xl shadow-lg shadow-blue-900/5 border border-indigo-50 p-8 flex flex-col">
+                <div className="flex items-center justify-between mb-8">
+                    <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                        <TrendingUp className="w-5 h-5 text-gray-400" />
+                        48-Hour Forecast
+                    </h3>
+                    <div className="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-full uppercase tracking-wide">
+                        Predictive Analysis
+                    </div>
+                </div>
+                
+                <div className="flex-1 w-full min-h-[300px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={forecast || []}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                      <XAxis
+                        dataKey="timestamp"
+                        tickFormatter={(time) => new Date(time).getHours() + ":00"}
+                        minTickGap={30}
+                        stroke="#94a3b8"
+                        style={{ fontSize: "12px", fontWeight: 500 }}
+                        axisLine={false}
+                        tickLine={false}
+                        dy={10}
+                      />
+                      <YAxis 
+                        stroke="#94a3b8" 
+                        style={{ fontSize: "12px", fontWeight: 500 }} 
+                        axisLine={false}
+                        tickLine={false}
+                        dx={-10}
+                      />
+                      <Tooltip
+                        labelFormatter={(label) => new Date(label).toLocaleString()}
+                        contentStyle={{
+                          backgroundColor: "#ffffff",
+                          border: "none",
+                          borderRadius: "12px",
+                          boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+                          padding: "12px",
+                          color: "#1f2937",
+                        }}
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="aqiValue"
+                        stroke="#2563eb"
+                        strokeWidth={4}
+                        dot={{ r: 0 }}
+                        activeDot={{ r: 6, strokeWidth: 0, fill: '#2563eb' }}
+                        name="AQI"
+                        isAnimationActive={true}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+            </div>
+
         </div>
       </main>
 
-      <footer className="border-t border-indigo-200 bg-gradient-to-r from-blue-50 to-indigo-50 mt-auto">
-        <div className="w-full px-8 py-12">
-          <div className="grid grid-cols-4 gap-8 mb-12">
-            {/* About Section */}
+      {/* Footer */}
+      <footer className="bg-white border-t border-gray-100 mt-12">
+        <div className="max-w-7xl mx-auto px-6 py-12">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+            
+            {/* Brand Column */}
             <div className="col-span-1">
-              <h3 className="text-sm font-bold text-indigo-700 uppercase tracking-widest mb-4">About</h3>
-              <p className="text-sm text-gray-600 leading-relaxed">
-                Monitor air quality in real-time and make informed decisions about your health and outdoor activities.
+              <div className="flex items-center gap-2 mb-4 text-blue-600">
+                  <Activity className="w-6 h-6" />
+                  <span className="text-lg font-bold text-gray-900">AQI Monitor</span>
+              </div>
+              <p className="text-sm text-gray-500 leading-relaxed">
+                Empowering communities with accurate, real-time air quality data to breathe safer and live healthier lives.
               </p>
             </div>
 
             {/* Quick Links */}
-            <div className="col-span-1">
-              <h3 className="text-sm font-bold text-indigo-700 uppercase tracking-widest mb-4">Quick Links</h3>
-              <ul className="space-y-2">
-                <li>
-                  <a
-                    href="/dashboard"
-                    className="text-sm text-gray-600 hover:text-indigo-600 transition-colors duration-300"
-                  >
-                    Dashboard
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/settings"
-                    className="text-sm text-gray-600 hover:text-indigo-600 transition-colors duration-300"
-                  >
-                    Settings
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-sm text-gray-600 hover:text-indigo-600 transition-colors duration-300">
-                    Privacy Policy
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-sm text-gray-600 hover:text-indigo-600 transition-colors duration-300">
-                    Terms of Service
-                  </a>
-                </li>
+            <div>
+              <h4 className="text-sm font-bold text-gray-900 uppercase tracking-widest mb-4">Platform</h4>
+              <ul className="space-y-3">
+                <li><a href="/dashboard" className="text-sm text-gray-500 hover:text-blue-600 transition-colors">Dashboard</a></li>
+                <li><a href="/history" className="text-sm text-gray-500 hover:text-blue-600 transition-colors">Historical Data</a></li>
+                <li><a href="/settings" className="text-sm text-gray-500 hover:text-blue-600 transition-colors">Settings</a></li>
               </ul>
             </div>
 
             {/* Resources */}
-            <div className="col-span-1">
-              <h3 className="text-sm font-bold text-indigo-700 uppercase tracking-widest mb-4">Resources</h3>
-              <ul className="space-y-2">
-                <li>
-                  <a href="#" className="text-sm text-gray-600 hover:text-indigo-600 transition-colors duration-300">
-                    Air Quality Guide
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-sm text-gray-600 hover:text-indigo-600 transition-colors duration-300">
-                    Health Tips
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-sm text-gray-600 hover:text-indigo-600 transition-colors duration-300">
-                    Blog
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-sm text-gray-600 hover:text-indigo-600 transition-colors duration-300">
-                    FAQ
-                  </a>
-                </li>
+            <div>
+              <h4 className="text-sm font-bold text-gray-900 uppercase tracking-widest mb-4">Support</h4>
+              <ul className="space-y-3">
+                <li><a href="#" className="text-sm text-gray-500 hover:text-blue-600 transition-colors">Health Guidelines</a></li>
+                <li><a href="#" className="text-sm text-gray-500 hover:text-blue-600 transition-colors">API Documentation</a></li>
+                <li><a href="#" className="text-sm text-gray-500 hover:text-blue-600 transition-colors">Contact Us</a></li>
               </ul>
             </div>
 
-            {/* Social Links */}
-            <div className="col-span-1">
-              <h3 className="text-sm font-bold text-indigo-700 uppercase tracking-widest mb-4">Follow Us</h3>
-              <div className="flex gap-4">
-                <a
-                  href="#"
-                  className="p-2 rounded-lg bg-white border border-indigo-200 text-indigo-600 hover:bg-indigo-50 hover:shadow-lg transition-all duration-300 card-hover"
-                >
-                  <Github className="w-4 h-4 icon-animate" />
+            {/* Socials */}
+            <div>
+              <h4 className="text-sm font-bold text-gray-900 uppercase tracking-widest mb-4">Connect</h4>
+              <div className="flex gap-3">
+                <a href="#" className="p-2 rounded-lg bg-gray-50 hover:bg-blue-50 text-gray-400 hover:text-blue-600 transition-colors">
+                  <Github className="w-5 h-5" />
                 </a>
-                <a
-                  href="#"
-                  className="p-2 rounded-lg bg-white border border-indigo-200 text-indigo-600 hover:bg-indigo-50 hover:shadow-lg transition-all duration-300 card-hover"
-                >
-                  <Linkedin className="w-4 h-4 icon-animate" />
+                <a href="#" className="p-2 rounded-lg bg-gray-50 hover:bg-blue-50 text-gray-400 hover:text-blue-600 transition-colors">
+                  <Linkedin className="w-5 h-5" />
                 </a>
-                <a
-                  href="#"
-                  className="p-2 rounded-lg bg-white border border-indigo-200 text-indigo-600 hover:bg-indigo-50 hover:shadow-lg transition-all duration-300 card-hover"
-                >
-                  <Mail className="w-4 h-4 icon-animate" />
+                <a href="#" className="p-2 rounded-lg bg-gray-50 hover:bg-blue-50 text-gray-400 hover:text-blue-600 transition-colors">
+                  <Mail className="w-5 h-5" />
                 </a>
               </div>
             </div>
           </div>
 
-          {/* Divider */}
-          <div className="border-t border-indigo-200 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-sm text-gray-600">© 2025 Air Quality Dashboard. All rights reserved.</p>
-            <div className="flex items-center gap-1 text-sm text-gray-600">
-              Made with
-              <Heart className="w-4 h-4 text-red-500 icon-animate" />
-              by the AQ Team
+          <div className="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-sm text-gray-400">© 2025 AQI Monitor. All rights reserved.</p>
+            <div className="flex items-center gap-1.5 text-sm text-gray-500">
+              Made with <Heart className="w-4 h-4 text-red-500 fill-current animate-pulse" /> by the Team
             </div>
           </div>
         </div>

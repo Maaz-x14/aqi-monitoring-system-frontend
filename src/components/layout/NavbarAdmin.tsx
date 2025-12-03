@@ -1,12 +1,18 @@
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Cloud, LogOut, Settings, History, LayoutDashboard, MessageSquare, Menu, X } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { 
+  Cloud, 
+  LogOut, 
+  Menu, 
+  X, 
+  ShieldCheck,
+  LayoutDashboard 
+} from 'lucide-react';
 
-function Navbar() {
+ function Navbar() {
   const { logout } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleLogout = () => {
@@ -14,43 +20,49 @@ function Navbar() {
     navigate('/login');
   };
 
-  const isActive = (path: string) => location.pathname === path ? "text-blue-600 bg-blue-50" : "text-gray-600 hover:bg-gray-50";
-
   return (
-    <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 relative z-[9999]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
+    <nav className="sticky top-0 z-[9999] bg-white/90 backdrop-blur-lg border-b border-gray-100 shadow-sm h-24 flex items-center">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center">
           
           {/* Logo Section */}
-          <div className="flex items-center">
-            <Link to="/admin" className="flex items-center gap-2 text-xl font-bold text-blue-600">
-                <Cloud className="w-8 h-8" />
-                <span className="hidden sm:inline">AQI Monitor</span>
+          <div className="flex items-center gap-8">
+            <Link to="/admin" className="group flex items-center gap-3">
+                <div className="p-3 bg-blue-600 rounded-2xl shadow-lg shadow-blue-600/20 group-hover:scale-105 transition-transform duration-300">
+                    <Cloud className="w-7 h-7 text-white" />
+                </div>
+                <div className="flex flex-col">
+                    <span className="text-xl font-bold text-gray-900 tracking-tight leading-none">AQI Monitor</span>
+                    <span className="text-xs font-medium text-blue-600 tracking-wide uppercase">Admin Portal</span>
+                </div>
             </Link>
             
-            {/* Desktop Navigation - Hidden on Mobile */}
-            <div className="hidden md:flex items-center gap-2 ml-8">
-                           <h1 className='px-3 py-2 rounded-md text-sm font-medium flex items-center gap-2'>ADMIN DASHBOARD</h1>
-
+            {/* Admin Badge - Desktop */}
+            <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-slate-100 border border-slate-200 rounded-full">
+                <ShieldCheck className="w-4 h-4 text-slate-500" />
+                <span className="text-sm font-bold text-slate-700 tracking-wide uppercase">Administrator Mode</span>
             </div>
           </div>
 
-          {/* Right Side Buttons */}
-          <div className="flex items-center gap-2">
+          {/* Right Side Actions */}
+          <div className="flex items-center gap-4">
+            
             <button 
                 onClick={handleLogout} 
-                className="hidden md:flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-md transition-colors shadow-sm"
+                className="hidden md:flex items-center gap-3 pl-4 pr-6 py-2.5 rounded-full text-sm font-semibold text-red-600 bg-red-50 hover:bg-red-100 hover:shadow-md transition-all duration-300 group"
             >
-              <LogOut className="w-4 h-4" />
+              <div className="p-1.5 bg-white rounded-full group-hover:scale-110 transition-transform">
+                  <LogOut className="w-4 h-4" />
+              </div>
               Logout
             </button>
 
             {/* Mobile Menu Button */}
             <button 
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="md:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none"
+                className="md:hidden p-3 rounded-xl text-gray-600 hover:bg-gray-100 transition-colors"
             >
-                {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                {isMobileMenuOpen ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
             </button>
           </div>
         </div>
@@ -58,13 +70,21 @@ function Navbar() {
 
       {/* Mobile Menu Dropdown */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-white border-t border-gray-200">
-            <div className="px-2 pt-2 pb-3 space-y-1">
+        <div className="absolute top-24 left-0 w-full bg-white border-b border-gray-100 shadow-xl md:hidden animate-in slide-in-from-top-5 fade-in duration-200">
+            <div className="px-6 py-6 space-y-3">
+                {/* Mobile Admin Badge */}
+                <div className="flex items-center gap-3 p-4 rounded-2xl bg-slate-50 border border-slate-100 mb-4">
+                    <div className="p-2 bg-white rounded-full shadow-sm">
+                        <ShieldCheck className="w-5 h-5 text-slate-600" />
+                    </div>
+                    <span className="font-bold text-slate-700">Admin Dashboard</span>
+                </div>
+
                 <button 
                     onClick={handleLogout}
-                    className="w-full text-left block px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-red-50 flex items-center gap-2"
+                    className="w-full flex items-center gap-4 p-4 rounded-2xl bg-red-50 text-red-600 font-medium hover:bg-red-100 transition-colors"
                 >
-                    <LogOut className="w-5 h-5" />
+                    <div className="p-2 bg-white rounded-full"><LogOut className="w-6 h-6" /></div>
                     Logout
                 </button>
             </div>
@@ -75,4 +95,4 @@ function Navbar() {
 }
 
 
-export {Navbar}
+export { Navbar };
