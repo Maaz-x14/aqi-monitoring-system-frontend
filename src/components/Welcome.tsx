@@ -68,10 +68,7 @@ export default function Welcome() {
                       <p className="text-sm text-slate-400">20 Station across Pakistan</p>
                     </div>
                  </div>
-                 <div className="flex flex-col items-end">
-                    <span className="text-3xl font-mono font-bold text-white">42</span>
-                    <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider">Good AQI</span>
-                 </div>
+                
                 
               </div>
 
