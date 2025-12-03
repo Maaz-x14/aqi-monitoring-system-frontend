@@ -64,8 +64,8 @@ export default function Welcome() {
                       <Wind className="w-8 h-8 text-cyan-400" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-bold text-white">Sensor Array</h3>
-                      <p className="text-sm text-slate-400">Rawalpindi Station</p>
+                      <h3 className="text-lg font-bold text-white">Live Monitoring </h3>
+                      <p className="text-sm text-slate-400">20 Station across Pakistan</p>
                     </div>
                  </div>
                  <div className="flex flex-col items-end">
