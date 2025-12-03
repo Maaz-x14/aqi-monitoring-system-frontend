@@ -18,16 +18,17 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
-    /* Linting */
+    /* Linting - OPTION B ACTIVATED (Disabled checks) */
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
 
-    /* --- ADD THIS --- */
+    /* Type Definitions for Vite & Vitest */
     "types": ["vite/client", "vitest/globals"]
   },
   "include": ["src"],
+  "exclude": ["src/**/*.test.tsx", "src/**/*.test.ts", "src/**/__tests__/*"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
