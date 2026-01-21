@@ -8,6 +8,8 @@ import {
   ArrowRight,
   Zap
 } from 'lucide-react';
+import StarBorder from './StarBorder'
+
 
 export default function Welcome() {
   return (
@@ -52,61 +54,83 @@ export default function Welcome() {
             </p>
           </div>
 
-          {/* Right: Dark Glass Stats Panel */}
-          <div className="relative">
-            {/* Background Glow behind card */}
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-3xl blur-2xl opacity-20 transform scale-95 translate-y-4"></div>
-            
-            <div className="relative bg-slate-900/80 backdrop-blur-md border border-slate-700/50 p-8 rounded-3xl shadow-2xl">
-              <div className="flex items-center justify-between mb-8 border-b border-slate-700 pb-6">
-                 <div className="flex items-center gap-4">
+            {/* Right: Dark Glass Stats Panel with StarBorder */}
+            {/* 1. We pass the glass styles (bg-slate-900/80, backdrop-blur, etc.) directly to className.
+                2. We set w-full so it takes available width.
+            */}
+            <StarBorder
+              as="div"
+              className="w-full bg-slate-900/80 backdrop-blur-md border border-slate-700/50 shadow-2xl p-8"
+              color="cyan"
+              speed="5s"
+            >
+              {/* Inner Content - No extra wrapper div needed unless for layout */}
+              <div className="relative">
+                {/* Optional: Keep your glow effect if you want, but StarBorder provides one too */}
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-3xl blur-2xl opacity-20 transform scale-95 translate-y-4 -z-10"></div>
+
+                {/* Header Section */}
+                <div className="flex items-center justify-between mb-8 border-b border-slate-700 pb-6">
+                  <div className="flex items-center gap-4">
                     <div className="p-3 bg-slate-800 rounded-xl border border-slate-700 shadow-inner">
                       <Wind className="w-8 h-8 text-cyan-400" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-bold text-white">Live Monitoring </h3>
-                      <p className="text-sm text-slate-400">20 Station across Pakistan</p>
+                      <h3 className="text-lg font-bold text-white">Live Monitoring</h3>
+                      <p className="text-sm text-slate-400">20 Stations across Pakistan</p>
                     </div>
-                 </div>
-                
-                
+                  </div>
+                </div>
+
+                {/* Stats Grid */}
+                <div className="space-y-4">
+                  <div className="group p-5 bg-slate-950 rounded-xl border border-slate-800 hover:border-cyan-500/50 transition-colors duration-300 flex items-center gap-5">
+                    <div className="p-3 bg-slate-900 rounded-lg group-hover:bg-slate-800 transition-colors">
+                      <Activity className="w-6 h-6 text-rose-500" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
+                        Live Tracking
+                      </p>
+                      <p className="text-lg font-semibold text-slate-200 group-hover:text-white transition-colors">
+                        PM2.5 & PM10 Levels
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="group p-5 bg-slate-950 rounded-xl border border-slate-800 hover:border-indigo-500/50 transition-colors duration-300 flex items-center gap-5">
+                    <div className="p-3 bg-slate-900 rounded-lg group-hover:bg-slate-800 transition-colors">
+                      <ThermometerSun className="w-6 h-6 text-amber-500" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
+                        Forecast
+                      </p>
+                      <p className="text-lg font-semibold text-slate-200 group-hover:text-white transition-colors">
+                        48-Hour Predictive Trends
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="group p-5 bg-slate-950 rounded-xl border border-slate-800 hover:border-emerald-500/50 transition-colors duration-300 flex items-center gap-5">
+                    <div className="p-3 bg-slate-900 rounded-lg group-hover:bg-slate-800 transition-colors">
+                      <ShieldCheck className="w-6 h-6 text-emerald-500" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
+                        Advisory
+                      </p>
+                      <p className="text-lg font-semibold text-slate-200 group-hover:text-white transition-colors">
+                        Health Recommendations
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
+            </StarBorder>
 
-              {/* Stats Grid */}
-              <div className="space-y-4">
-                <div className="group p-5 bg-slate-950 rounded-xl border border-slate-800 hover:border-cyan-500/50 transition-colors duration-300 flex items-center gap-5">
-                  <div className="p-3 bg-slate-900 rounded-lg group-hover:bg-slate-800 transition-colors">
-                    <Activity className="w-6 h-6 text-rose-500" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Live Tracking</p>
-                    <p className="text-lg font-semibold text-slate-200 group-hover:text-white transition-colors">PM2.5 & PM10 Levels</p>
-                  </div>
-                </div>
-
-                <div className="group p-5 bg-slate-950 rounded-xl border border-slate-800 hover:border-indigo-500/50 transition-colors duration-300 flex items-center gap-5">
-                  <div className="p-3 bg-slate-900 rounded-lg group-hover:bg-slate-800 transition-colors">
-                    <ThermometerSun className="w-6 h-6 text-amber-500" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Forecast</p>
-                    <p className="text-lg font-semibold text-slate-200 group-hover:text-white transition-colors">48-Hour Predictive Trends</p>
-                  </div>
-                </div>
-
-                <div className="group p-5 bg-slate-950 rounded-xl border border-slate-800 hover:border-emerald-500/50 transition-colors duration-300 flex items-center gap-5">
-                  <div className="p-3 bg-slate-900 rounded-lg group-hover:bg-slate-800 transition-colors">
-                    <ShieldCheck className="w-6 h-6 text-emerald-500" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Advisory</p>
-                    <p className="text-lg font-semibold text-slate-200 group-hover:text-white transition-colors">Health Recommendations</p>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
-        </div>
+          
 
         {/* Bottom Feature Cards */}
         <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
