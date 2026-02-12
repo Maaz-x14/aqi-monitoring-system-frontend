@@ -234,7 +234,9 @@ type FloatingLinesProps = {
   mixBlendMode?: React.CSSProperties['mixBlendMode'];
 };
 
-function hexToVec3(hex: string): Vector3 {
+// FIX 1: Removed explicit return type ": Vector3"
+// TypeScript will automatically infer the return type as Vector3 from "new Vector3"
+function hexToVec3(hex: string) {
   let value = hex.trim();
   if (value.startsWith('#')) value = value.slice(1);
   let r = 255, g = 255, b = 255;
@@ -265,15 +267,21 @@ export default function FloatingLines({
   mouseDamping = 0.05,
   parallax = true,
   parallaxStrength = 0.2,
-  mixBlendMode = 'normal' // Changed default from 'screen' to 'normal' for dark bg
+  mixBlendMode = 'normal'
 }: FloatingLinesProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const targetMouseRef = useRef<Vector2>(new Vector2(-1000, -1000));
-  const currentMouseRef = useRef<Vector2>(new Vector2(-1000, -1000));
+
+  // FIX 2: Removed explicit type argument "<Vector2>"
+  // TypeScript will infer the ref type from the initial value "new Vector2(...)"
+  const targetMouseRef = useRef(new Vector2(-1000, -1000));
+  const currentMouseRef = useRef(new Vector2(-1000, -1000));
+  
   const targetInfluenceRef = useRef<number>(0);
   const currentInfluenceRef = useRef<number>(0);
-  const targetParallaxRef = useRef<Vector2>(new Vector2(0, 0));
-  const currentParallaxRef = useRef<Vector2>(new Vector2(0, 0));
+  
+  // FIX 3: Removed explicit type argument "<Vector2>" here as well
+  const targetParallaxRef = useRef(new Vector2(0, 0));
+  const currentParallaxRef = useRef(new Vector2(0, 0));
 
   const getLineCount = (waveType: 'top' | 'middle' | 'bottom'): number => {
     if (typeof lineCount === 'number') return lineCount;
